@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<h1>Register</h1>
+<form method="POST">
+    {{user_form.csrf_token}}
+    <p>
+        {{user_form.username.label}} </br>
+        {{user_form.username(size=30)}}
+    </p>
+    <p>
+        {{user_form.password.label}} </br>
+        {{user_form.password(size=30)}}
+    </p>
+    <p>
+        {{user_form.create}}
+    </p>
+</form>
+</body>
+</html>

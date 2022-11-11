@@ -2,7 +2,7 @@ from database import db
 
 # many to many table
 user_product = db.Table("user_product",
-                        db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
+                        db.Column("user_id", db.Integer, db.ForeignKey("user_.id")),
                         db.Column("product_id", db.Integer, db.ForeignKey("product.id"))
                         )
 
@@ -17,10 +17,10 @@ class product(db.Model):
     last_update = db.Column(db.DateTime, nullable=False)
 
 
-class user(db.Model):
+class user_(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    password = db.Column(db.String(30))
+    username = db.Column(db.String(30), nullable=False)
+    password = db.Column(db.String(30), nullable=False)
     following = db.relationship("product", secondary=user_product, backref="followers")
 
     def __str__(self):
