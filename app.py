@@ -36,8 +36,9 @@ def index():
     else:
         user = user_.query.filter_by(username=session.get("user")).one()
         all_products = user.following
+        num_prod = len(all_products)
         app.logger.debug(f"{all_products}")
-        return render_template("index.html", user=session.get("user"))
+        return render_template("index.html", user=session.get("user"), products=all_products, num_prod=num_prod)
 
 
 @app.route("/login", methods=["POST", "GET"])
@@ -82,6 +83,11 @@ def register():
             except Exception as e:
                 msg = "This username its also used"
 
+
+@app.route("/delete/<int:prod_id>")
+def delete_product(prod_id):
+    pass
+
     # if request.method == "GET":
     #     if len(request.form["password"]) == 0 or len(request.form["username"]) == 0:
     #         msg = "Incorrect"
@@ -98,11 +104,13 @@ def register():
     #             return render_template("register.html", msg=msg)
     #         return redirect(url_for("index"))
 
-    return render_template("register.html", msg=msg)
 
-
-@app.route("/add_product")
+@app.route("/add_product", methods=["GET", "POST"])
 def add_product():
+    if request.method == "POST":
+        url = request.form["link"]
+        # TODO call amazon scrapper function
+
     return render_template("add.html")
 
 

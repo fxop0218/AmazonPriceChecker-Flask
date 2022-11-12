@@ -1,15 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Hello</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+{{super()}}
+List
+{% endblock %}
+
+{% block content %}
 <h1>Logged correctly</h1>
 <p>{{user}}</p>
-<a href="{{url_for('exit')}}">Exit</a>
 <div>
-    <a href="{{url_for('add_product')}}">Add product</a>
+    {% if num_prod <= 0 %}
+    <p>No products added</p>
+    {% else %}
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>First price</th>
+            <th>Last price</th>
+            <th>Last update</th>
+            <th>Amazon list</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{product.id}}</td>
+            <td>{{product.name}}</td>
+            <td>{{product.first_price}}</td>
+            <td>{{product.last_price}}</td>
+            <td>{{prodcut.last_update}}</td>
+            <td><a href="{{product.url}}">Go to amazon</a></td>
+            <td><a href="delete/{{product.id}}">Delete</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <a href="{{url_for('exit')}}">Exit</a>
+    <div>
+        <a href="{{url_for('add_product')}}">Add product</a>
+    </div>
 </div>
-</body>
-</html>
+{% endblock %}
