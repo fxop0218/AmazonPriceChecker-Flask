@@ -1,9 +1,9 @@
 from database import db
 from flask import Flask, render_template, session, redirect, url_for, request
 from flask_migrate import Migrate
-from helpful_funcions import encript
+from helpful_funcions import encript, add_db_product
+from amazonScrapper.amazon_scrapper import scrap_product
 
-from forms import UserFrom
 from models import user_, product
 
 app = Flask(__name__)
@@ -109,7 +109,21 @@ def delete_product(prod_id):
 def add_product():
     if request.method == "POST":
         url = request.form["link"]
-        # TODO call amazon scrapper function
+        try:
+            ex_prod = product.query.filter_by(url=url).one()
+            app.logger.debug(f"product: {ex_prod}")
+        except Exception as ex:
+            scraped_prod = scrap_product(url)
+            added = add_db_product(scraped_prod)
+            if not added:
+                return render_template("add.html")  # TODO add error information
+            else:
+                ex_prod = product.query.filter_by(url=url)
+        # TODO add the object to the user
+        act_user = user_.query.filter_by(username=session.get("username"))
+        act_user.following.append(ex_prod)
+        db.session.commit()
+        return render_template("add.html")
 
     return render_template("add.html")
 

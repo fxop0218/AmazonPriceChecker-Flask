@@ -34,11 +34,13 @@ def scrap_product(url):
         response = session.get(url)
         soup = BeautifulSoup(response.content, "html.parser")
         try:
-            product_dict["title"] = soup.find(id="productTitle").text
+            product_dict["title"] = soup.find(id="productTitle").text.strip()
             product_dict["price"] = soup.find(class_="a-price-whole").text
             product_dict["price"] = product_dict["price"] + soup.find(class_="a-price-fraction").text
             strs = soup.find(class_="a-icon-alt").text
             product_dict["strs"] = strs.replace("de 5 estrellas", "")  # Delete the first part of the stars text
+            product_dict["url"] = url
+            session.close()
             return product_dict
         except AttributeError as attrError:
             return None
