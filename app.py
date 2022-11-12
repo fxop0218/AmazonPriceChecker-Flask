@@ -1,6 +1,7 @@
 from database import db
 from flask import Flask, render_template, session, redirect, url_for, request
 from flask_migrate import Migrate
+from helpful_funcions import encript
 
 from forms import UserFrom
 from models import user_, product
@@ -33,39 +34,80 @@ def index():
         # Set cookies
         return redirect(url_for("login"))
     else:
-        return render_template("index.html")
+        user = user_.query.filter_by(username=session.get("user")).one()
+        all_products = user.following
+        app.logger.debug(f"{all_products}")
+        return render_template("index.html", user=session.get("user"))
 
 
-@app.route("/login")
+@app.route("/login", methods=["POST", "GET"])
 def login():
     if session.get("logged_in"):
         return redirect(url_for("index"))
     if request.method == "POST" and "username" in request.form and "password" in request.form:
         username = request.form["username"]
-        password = request.form["password"]
-        account = user_.query.get_or_404(username)
+        password = encript(request.form["password"])
+        account = user_.query.filter_by(username=username).one()
+        app.logger.debug(f"Account: {account}")
+        app.logger.debug(f"username: {username}")
         if account:
-            session["logged_in"] = True
-            return redirect(url_for("index"))
+            if account.password == str(password):
+                session["logged_in"] = True
+                session["user"] = account.username
+                return redirect(url_for("index"))
 
-            # add cookie
     return render_template("login.html")
 
 
-@app.route("/register", methods=["POST","GET"])
+@app.route("/register", methods=["POST", "GET"])
 def register():
-    register_user = user_()
-    user_form = UserFrom(obj=register_user)
+    msg = ""
+    if session.get("logged_in"):
+        return redirect(url_for("index"))
+
     if request.method == "POST":
-        if user_form.validate_on_submit():
-            user_form.populate_obj(register_user)
-            db.session.add(register_user)
-            db.session.commit()
-            session["logged_id"] = True
-            return redirect(url_for("index"))
-    return render_template("register.html", user_form = user_form)
+        if len(request.form["password"]) == 0 or len(request.form["username"]) == 0:
+            msg = "Introduce correct values"
+        else:
+            try:
+                username = request.form["username"]
+                password = encript(request.form["password"])
+                new_user = user_(username=username, password=password)
+                db.session.add(new_user)
+                db.session.commit()
+                app.logger.debug("User created correctly")
+                session["logged_in"] = True
+                session["user"] = new_user.username
+                return redirect(url_for("index"))
+            except Exception as e:
+                msg = "This username its also used"
+
+    # if request.method == "GET":
+    #     if len(request.form["password"]) == 0 or len(request.form["username"]) == 0:
+    #         msg = "Incorrect"
+    #     else:
+    #         try:
+    #             username = request.form["username"]
+    #             password = encript(request.form["password"])
+    #             new_user = user_(username=username, password=password)
+    #             db.session.add(new_user)
+    #             db.session.commit()
+    #             app.logger.debug("User created correctly")
+    #         except Exception as e:
+    #             msg = "This username is used"
+    #             return render_template("register.html", msg=msg)
+    #         return redirect(url_for("index"))
+
+    return render_template("register.html", msg=msg)
 
 
 @app.route("/add_product")
 def add_product():
     return render_template("add.html")
+
+
+@app.route("/exit")
+def exit():
+    session.pop("logged_in")
+    session.pop("user")
+    return redirect(url_for("index"))

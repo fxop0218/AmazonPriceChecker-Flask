@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add product</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+{{super()}}
+Add product
+{%endblock%}
+
+{% block content %}
 <h1>Add product</h1>
-</body>
-</html>
+<form action="/add" method="POST">
+    <input type="text" name="link" placeholder="Link">
+    <button type="submit">Create object</button>
+</form>
+{%endblock%}
+

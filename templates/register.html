@@ -1,24 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-</head>
-<body>
-<h1>Register</h1>
+{% extends 'base.html'%}
+
+{% block title %}
+{{super()}}
+Register
+{%endblock%}
+
+{% block content %}
+<h1>Registrate</h1>
+<p>{{msg}}</p>
 <form method="POST">
-    {{user_form.csrf_token}}
-    <p>
-        {{user_form.username.label}} </br>
-        {{user_form.username(size=30)}}
-    </p>
-    <p>
-        {{user_form.password.label}} </br>
-        {{user_form.password(size=30)}}
-    </p>
-    <p>
-        {{user_form.create}}
-    </p>
+    <input id="username" name="username" type="text" placeholder="Enter Your Username" class="textbox"/></br></br>
+    <input id="password" name="password" type="password" placeholder="Enter Your Password"
+           class="textbox"/></br>
+    <input type="submit" class="btn" value="Register"></br></br>
 </form>
-</body>
-</html>
+{% endblock %}
