@@ -86,7 +86,12 @@ def register():
 
 @app.route("/delete/<int:prod_id>")
 def delete_product(prod_id):
-    pass
+    username = session.get("user")
+    act_user = user_.query.filter_by(username = username).one()
+    selected_product = product.query.get_or_404(prod_id)
+    act_user.following.remove(selected_product)
+    db.session.commit()
+    return redirect(url_for("index"))
 
     # if request.method == "GET":
     #     if len(request.form["password"]) == 0 or len(request.form["username"]) == 0:
