@@ -18,8 +18,8 @@ class product(db.Model):
 
     def __str__(self):
         return (f"Id: {self.id} "
-                f"Url: {self.url[:50]} "
-                f"name {self.name[:30]} "
+                f"Url: {self.url[:30]} "
+                f"name {self.name[:20]} "
                 f"first price: {self.first_price[:30]} "
                 f"last price: {self.last_price[:30]} "
                 f"last update: {self.last_update[:30]} "

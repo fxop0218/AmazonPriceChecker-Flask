@@ -29,8 +29,8 @@ List
         <tr>
             <td>{{product.id}}</td>
             <td>{{product.name}}</td>
-            <td>{{product.first_price}}</td>
-            <td>{{product.last_price}}</td>
+            <td>{{product.first_price}} €</td>
+            <td>{{product.last_price}} €</td>
             <td>{{product.last_update}}</td>
             <td><a href="{{product.url}}">Go to amazon</a></td>
             <td><a href="delete/{{product.id}}">Delete</a></td>
@@ -38,10 +38,16 @@ List
         {% endfor %}
         </tbody>
     </table>
+    <div>
+        <a href="{{url_for('reload_price')}}">Reload prices</a>
+    </div>
     {% endif %}
-    <a href="{{url_for('exit')}}">Exit</a>
     <div>
         <a href="{{url_for('add_product')}}">Add product</a>
     </div>
+    <div>
+        <a href="{{url_for('exit_login')}}">Exit</a>
+    </div>
+
 </div>
 {% endblock %}

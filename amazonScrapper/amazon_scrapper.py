@@ -37,7 +37,7 @@ def scrap_product(url):
             product_dict["title"] = soup.find(id="productTitle").text.strip()
             product_dict["price"] = soup.find(class_="a-price-whole").text
             product_dict["price"] = product_dict["price"] + soup.find(class_="a-price-fraction").text
-            product_dict["price"] = product_dict["price"].replace(".", ",s")
+            product_dict["price"] = product_dict["price"].replace(".", ",")
             strs = soup.find(class_="a-icon-alt").text
             product_dict["strs"] = strs.replace("de 5 estrellas", "")  # Delete the first part of the stars text
             product_dict["url"] = url
@@ -49,3 +49,17 @@ def scrap_product(url):
     else:
         # If the link doesn't work, return None
         return None
+
+
+def scrapp_only_price(url):
+    if check_existence(url):
+        print("Correct link")
+        session = HTMLSession()
+        response = session.get(url)
+        soup = BeautifulSoup(response.content, "html.parser")
+        try:
+            price = soup.find(class_="a-price-whole").text + soup.find(class_="a-price-fraction")
+            price = price.replace(".", ",")
+            return price
+        except Exception as e:
+            return "Product not found"
