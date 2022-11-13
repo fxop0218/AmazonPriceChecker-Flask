@@ -10,7 +10,7 @@ user_product = db.Table("user_product",
 # Class name in lowercase
 class product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(500), nullable=False)
+    url = db.Column(db.String(500), nullable=False, unique=True)
     name = db.Column(db.String(252), nullable=False)
     first_price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
     last_price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)

@@ -111,16 +111,18 @@ def add_product():
         url = request.form["link"]
         try:
             ex_prod = product.query.filter_by(url=url).one()
-            app.logger.debug(f"product: {ex_prod}")
         except Exception as ex:
             scraped_prod = scrap_product(url)
             added = add_db_product(scraped_prod)
+
             if not added:
                 return render_template("add.html")  # TODO add error information
             else:
-                ex_prod = product.query.filter_by(url=url)
+                ex_prod = product.query.filter_by(url=url).one()
         # TODO add the object to the user
-        act_user = user_.query.filter_by(username=session.get("username"))
+        print(session.get("user"))
+        act_user = user_.query.filter_by(username=session.get("user")).one()
+
         act_user.following.append(ex_prod)
         db.session.commit()
         return render_template("add.html")

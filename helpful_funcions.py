@@ -10,14 +10,15 @@ def encript(str):
 
 def add_db_product(product_):
     try:
-        price = product_["price"].replace(".", ",")
+        price = product_["price"].replace(",", ".")
         price = float(price)
-        new_product = product(product_["url"],
-                              product_["name"],
-                              price,
-                              price,
-                              datetime.datetime.now())
+        new_product = product(url=product_["url"],
+                              name=product_["title"],
+                              first_price=price,
+                              last_price=price,
+                              last_update=datetime.datetime.now())
         db.session.add(new_product)
+        db.session.commit()
     except Exception as e:
         print(f"Error: {e}")
         return False
